@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       POETRY_VERSION: 1.8.2
+      MUJOCO_GL: egl
     steps:
       #----------------------------------------------
       #       check-out repo and set-up python
@@ -83,8 +84,8 @@ jobs:
           path: .venv
           key: venv-${{ steps.setup-python.outputs.python-version }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}
 
-      # - name: Install libegl1-mesa-dev
-      #   run: sudo apt-get update && sudo apt-get install -y libegl1-mesa-dev
+      - name: Install libegl1-mesa-dev
+        run: sudo apt-get update && sudo apt-get install -y libegl1-mesa-dev
 
       #----------------------------------------------
       #             install project
