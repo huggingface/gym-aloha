@@ -75,8 +75,8 @@ class AlohaEnv(gym.Env):
                         }
                     ),
                     "agent_pos": spaces.Box(
-                        low=-np.inf,
-                        high=np.inf,
+                        low=-1000.0,
+                        high=1000.0,
                         shape=(len(JOINTS),),
                         dtype=np.float64,
                     ),

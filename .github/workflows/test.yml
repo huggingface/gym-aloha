@@ -99,7 +99,7 @@ jobs:
       - name: Run tests
         run: |
           source .venv/bin/activate
-          pytest --cov=./gym_pusht --cov-report=xml tests
+          pytest --cov=./gym_aloha tests
 
       #   TODO(aliberts): Link with HF Codecov account
       # - name: Upload coverage reports to Codecov with GitHub Action
