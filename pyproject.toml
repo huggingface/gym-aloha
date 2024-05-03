@@ -42,6 +42,7 @@ test = ["pytest", "pytest-cov"]
 line-length = 110
 target-version = "py310"
 exclude = [
+    "example.py",
     ".bzr",
     ".direnv",
     ".eggs",
