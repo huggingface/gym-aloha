@@ -3,6 +3,8 @@
 ._.DS_Store
 .vscode
 
+# Data
+*.mp4
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

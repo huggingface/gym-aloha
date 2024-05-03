@@ -26,26 +26,23 @@ python = "^3.10"
 mujoco = "^2.3.7"
 gymnasium = "^0.29.1"
 dm-control = "1.0.14"
+imageio = {extras = ["ffmpeg"], version = "^2.34.0"}
+pre-commit = {version = "^3.7.0", optional = true}
+debugpy = {version = "^1.8.1", optional = true}
+pytest = {version = "^8.1.0", optional = true}
+pytest-cov = {version = "^5.0.0", optional = true}
 
 
-[tool.poetry.group.dev]
-optional = true
-
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^3.6.2"
-debugpy = "^1.8.1"
-
-
-[tool.poetry.group.test.dependencies]
-pytest = "^8.1.0"
-pytest-cov = "^5.0.0"
+[tool.poetry.extras]
+dev = ["pre-commit", "debugpy"]
+test = ["pytest", "pytest-cov"]
 
 
 [tool.ruff]
 line-length = 110
 target-version = "py310"
 exclude = [
+    "example.py",
     ".bzr",
     ".direnv",
     ".eggs",
