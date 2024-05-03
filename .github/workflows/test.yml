@@ -4,106 +4,50 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - "gym_aloha/**"
+      - "tests/**"
+      - "examples.py"
+      - ".github/**"
+      - "poetry.lock"
   push:
     branches:
       - main
+    paths:
+      - "gym_aloha/**"
+      - "tests/**"
+      - "examples.py"
+      - ".github/**"
+      - "poetry.lock"
 
 jobs:
-  tests:
+  pytest:
+    name: Pytest
     runs-on: ubuntu-latest
     env:
-      POETRY_VERSION: 1.8.2
+      DATA_DIR: tests/data
       MUJOCO_GL: egl
     steps:
-      #----------------------------------------------
-      #       check-out repo and set-up python
-      #----------------------------------------------
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          lfs: true
+      - uses: actions/checkout@v4
 
-      - name: Set up python
-        id: setup-python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      #----------------------------------------------
-      #         install & configure poetry
-      #----------------------------------------------
-      - name: Load cached Poetry installation
-        id: restore-poetry-cache
-        uses: actions/cache/restore@v3
-        with:
-          path: ~/.local
-          key: poetry-${{ env.POETRY_VERSION }}
-
-      - name: Install Poetry
-        if: steps.restore-poetry-cache.outputs.cache-hit != 'true'
-        uses: snok/install-poetry@v1
-        with:
-          version: ${{ env.POETRY_VERSION }}
-          virtualenvs-create: true
-          installer-parallel: true
-
-      - name: Save cached Poetry installation
-        if: |
-          steps.restore-poetry-cache.outputs.cache-hit != 'true' &&
-          github.ref_name == 'main'
-        id: save-poetry-cache
-        uses: actions/cache/save@v3
-        with:
-          path: ~/.local
-          key: poetry-${{ env.POETRY_VERSION }}
-
-      - name: Configure Poetry
-        run: poetry config virtualenvs.in-project true
-
-      #----------------------------------------------
-      #           install dependencies
-      #----------------------------------------------
-      - name: Load cached venv
-        id: restore-dependencies-cache
-        uses: actions/cache/restore@v3
-        with:
-          path: .venv
-          key: venv-${{ steps.setup-python.outputs.python-version }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install dependencies
-        if: steps.restore-dependencies-cache.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root --without dev
-
-      - name: Save cached venv
-        if: |
-            steps.restore-dependencies-cache.outputs.cache-hit != 'true' &&
-            github.ref_name == 'main'
-        id: save-dependencies-cache
-        uses: actions/cache/save@v3
-        with:
-          path: .venv
-          key: venv-${{ steps.setup-python.outputs.python-version }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install libegl1-mesa-dev
+      - name: Install EGL
         run: sudo apt-get update && sudo apt-get install -y libegl1-mesa-dev
 
-      #----------------------------------------------
-      #             install project
-      #----------------------------------------------
-      - name: Install project
-        run: poetry install --no-interaction --without dev
-
-      #----------------------------------------------
-      #            run tests & coverage
-      #----------------------------------------------
-      - name: Run tests
+      - name: Install poetry
         run: |
-          source .venv/bin/activate
-          pytest --cov=./gym_aloha tests
+          pipx install poetry && poetry config virtualenvs.in-project true
+          echo "${{ github.workspace }}/.venv/bin" >> $GITHUB_PATH
 
-      #   TODO(aliberts): Link with HF Codecov account
-      # - name: Upload coverage reports to Codecov with GitHub Action
-      #   uses: codecov/codecov-action@v4
-      #   with:
-      #     files: ./coverage.xml
-      #     verbose: true
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "poetry"
+
+      - name: Install poetry dependencies
+        run: |
+          poetry install --all-extras
+
+      - name: Test with pytest
+        run: |
+          pytest tests -v --cov=./gym_aloha --durations=0
