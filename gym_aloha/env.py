@@ -109,20 +109,20 @@ class AlohaEnv(gym.Env):
         # time limit is controlled by StepCounter in env factory
         time_limit = float("inf")
 
-        if "transfer_cube" in task_name:
+        if task_name  == "transfer_cube":
             xml_path = ASSETS_DIR / "bimanual_viperx_transfer_cube.xml"
             physics = mujoco.Physics.from_xml_path(str(xml_path))
             task = TransferCubeTask()
-        elif "insertion" in task_name:
+        elif task_name == "insertion":
             xml_path = ASSETS_DIR / "bimanual_viperx_insertion.xml"
             physics = mujoco.Physics.from_xml_path(str(xml_path))
             task = InsertionTask()
-        elif "end_effector_transfer_cube" in task_name:
+        elif task_name == "end_effector_transfer_cube":
             raise NotImplementedError()
             xml_path = ASSETS_DIR / "bimanual_viperx_end_effector_transfer_cube.xml"
             physics = mujoco.Physics.from_xml_path(str(xml_path))
             task = TransferCubeEndEffectorTask()
-        elif "end_effector_insertion" in task_name:
+        elif task_name == "end_effector_insertion":
             raise NotImplementedError()
             xml_path = ASSETS_DIR / "bimanual_viperx_end_effector_insertion.xml"
             physics = mujoco.Physics.from_xml_path(str(xml_path))
@@ -156,9 +156,9 @@ class AlohaEnv(gym.Env):
             self._env.task._random = np.random.RandomState(seed)
 
         # TODO(rcadene): do not use global variable for this
-        if "transfer_cube" in self.task:
+        if self.task == "transfer_cube":
             BOX_POSE[0] = sample_box_pose(seed)  # used in sim reset
-        elif "insertion" in self.task:
+        elif self.task == "insertion":
             BOX_POSE[0] = np.concatenate(sample_insertion_pose(seed))  # used in sim reset
         else:
             raise ValueError(self.task)
