@@ -1,33 +1,35 @@
-# gym-aloha
+# gym-so100
 
-A gym environment for ALOHA
+A gym environment for [SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100).
 
-<img src="http://remicadene.com/assets/gif/aloha_act.gif" width="50%" alt="ACT policy on ALOHA env"/>
+<img src="./example_episode_0.gif" width="50%" alt="ACT SO100EEInsertion-v0 policy on SO100 env"/>
 
 
 ## Installation
 
 Create a virtual environment with Python 3.10 and activate it, e.g. with [`miniconda`](https://docs.anaconda.com/free/miniconda/index.html):
 ```bash
-conda create -y -n aloha python=3.10 && conda activate aloha
+conda create -y -n so100 python=3.10 && conda activate so100
 ```
 
-Install gym-aloha:
+Install gym-so100:
 ```bash
-pip install gym-aloha
+pip install -e .
 ```
 
 
 ## Quickstart
+
+### 1. Check the environment
 
 ```python
 # example.py
 import imageio
 import gymnasium as gym
 import numpy as np
-import gym_aloha
+import gym_so100
 
-env = gym.make("gym_aloha/AlohaInsertion-v0")
+env = gym.make("gym_so100/SO100Insertion-v0")
 observation, info = env.reset()
 frames = []
 
@@ -43,18 +45,22 @@ for _ in range(1000):
 env.close()
 imageio.mimsave("example.mp4", np.stack(frames), fps=25)
 ```
+### 2. Run the example script
 
+```bash
+python scripted_sim_example.py
+```
 
 ## Description
-Aloha environment.
+SO100 *(aka. SO-ARM100)* environment.
 
 Two tasks are available:
 - TransferCubeTask: The right arm needs to first pick up the red cube lying on the table, then place it inside the gripper of the other arm.
 - InsertionTask: The left and right arms need to pick up the socket and peg respectively, and then insert in mid-air so the peg touches the “pins” inside the socket.
 
 ### Action Space
-The action space consists of continuous values for each arm and gripper, resulting in a 14-dimensional vector:
-- Six values for each arm's joint positions (absolute values).
+The action space consists of continuous values for each arm and gripper, resulting in a 12-dimensional vector:
+- Five values for each arm's joint positions (absolute values).
 - One value for each gripper's position, normalized between 0 (closed) and 1 (open).
 
 ### Observation Space
@@ -86,10 +92,10 @@ The arms and the items (block, peg, socket) start at a random position and angle
 
 ```python
 >>> import gymnasium as gym
->>> import gym_aloha
->>> env = gym.make("gym_aloha/AlohaInsertion-v0", obs_type="pixels", render_mode="rgb_array")
+>>> import gym_so100
+>>> env = gym.make("gym_so100/SO100Insertion-v0", obs_type="pixels", render_mode="rgb_array")
 >>> env
-<TimeLimit<OrderEnforcing<PassiveEnvChecker<AlohaEnv<gym_aloha/AlohaInsertion-v0>>>>>
+<TimeLimit<OrderEnforcing<PassiveEnvChecker<SO100Env<gym_so100/SO100Insertion-v0>>>>>
 ```
 
 * `obs_type`: (str) The observation type. Can be either `pixels` or `pixels_agent_pos`. Default is `pixels`.
@@ -129,4 +135,4 @@ pre-commit
 
 ## Acknowledgment
 
-gym-aloha is adapted from [ALOHA](https://tonyzhaozh.github.io/aloha/)
+gym-so100 is adapted from [gym-aloha](https://github.com/huggingface/gym-aloha)

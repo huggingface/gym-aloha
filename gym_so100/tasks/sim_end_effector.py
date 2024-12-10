@@ -3,14 +3,14 @@ import collections
 import numpy as np
 from dm_control.suite import base
 
-from gym_aloha.constants import (
+from gym_so100.constants import (
     PUPPET_GRIPPER_POSITION_CLOSE,
     START_ARM_POSE,
     normalize_puppet_gripper_position,
     normalize_puppet_gripper_velocity,
     unnormalize_puppet_gripper_position,
 )
-from gym_aloha.utils import sample_box_pose, sample_insertion_pose
+from gym_so100.utils import sample_box_pose, sample_insertion_pose
 
 """
 Environment for simulated robot bi-manual manipulation, with end-effector control.

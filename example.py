@@ -1,9 +1,9 @@
 import imageio
 import gymnasium as gym
 import numpy as np
-import gym_aloha
+import gym_so100
 
-env = gym.make("gym_aloha/AlohaInsertion-v0")
+env = gym.make("gym_so100/SO100EEInsertion-v0")
 observation, info = env.reset()
 frames = []
 

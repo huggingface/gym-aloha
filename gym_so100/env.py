@@ -4,21 +4,22 @@ from dm_control import mujoco
 from dm_control.rl import control
 from gymnasium import spaces
 
-from gym_aloha.constants import (
+from gym_so100.constants import (
     ACTIONS,
     ASSETS_DIR,
     DT,
     JOINTS,
+    START_ARM_POSE,
 )
-from gym_aloha.tasks.sim import BOX_POSE, InsertionTask, TransferCubeTask
-from gym_aloha.tasks.sim_end_effector import (
+from gym_so100.tasks.sim import BOX_POSE, InsertionTask, TransferCubeTask
+from gym_so100.tasks.sim_end_effector import (
     InsertionEndEffectorTask,
     TransferCubeEndEffectorTask,
 )
-from gym_aloha.utils import sample_box_pose, sample_insertion_pose
+from gym_so100.utils import sample_box_pose, sample_insertion_pose
 
 
-class AlohaEnv(gym.Env):
+class SO100Env(gym.Env):
     # TODO(aliberts): add "human" render_mode
     metadata = {"render_modes": ["rgb_array"], "render_fps": 50}
 
@@ -42,6 +43,9 @@ class AlohaEnv(gym.Env):
         self.visualization_height = visualization_height
 
         self._env = self._make_env_task(self.task)
+
+        # check if end effector task
+        self.is_ee_task = bool(self.task.startswith("end_effector_"))
 
         if self.obs_type == "state":
             raise NotImplementedError()
@@ -83,7 +87,24 @@ class AlohaEnv(gym.Env):
                 }
             )
 
-        self.action_space = spaces.Box(low=-1, high=1, shape=(len(ACTIONS),), dtype=np.float32)
+        # Add mocap_pose for ee tasks
+        if self.is_ee_task:
+            self.observation_space["mocap_pose_left"] = spaces.Box(
+                low=-1000.0, high=1000.0, shape=(7,), dtype=np.float64
+            )
+            self.observation_space["mocap_pose_right"] = spaces.Box(
+                low=-1000.0, high=1000.0, shape=(7,), dtype=np.float64
+            )
+            env_state_dim = 7 if "transfer_cube" in self.task else 14
+            self.observation_space["env_state"] = spaces.Box(
+                low=-1000.0, high=1000.0, shape=(env_state_dim,), dtype=np.float64
+            )
+
+        # Define the action space
+        if self.is_ee_task:
+            self.action_space = spaces.Box(low=-1, high=1, shape=(len(START_ARM_POSE),), dtype=np.float32)
+        else:
+            self.action_space = spaces.Box(low=-1, high=1, shape=(len(ACTIONS),), dtype=np.float32)
 
     def render(self):
         return self._render(visualize=True)
@@ -118,12 +139,10 @@ class AlohaEnv(gym.Env):
             physics = mujoco.Physics.from_xml_path(str(xml_path))
             task = InsertionTask()
         elif task_name == "end_effector_transfer_cube":
-            raise NotImplementedError()
             xml_path = ASSETS_DIR / "bimanual_viperx_end_effector_transfer_cube.xml"
             physics = mujoco.Physics.from_xml_path(str(xml_path))
             task = TransferCubeEndEffectorTask()
         elif task_name == "end_effector_insertion":
-            raise NotImplementedError()
             xml_path = ASSETS_DIR / "bimanual_viperx_end_effector_insertion.xml"
             physics = mujoco.Physics.from_xml_path(str(xml_path))
             task = InsertionEndEffectorTask()
@@ -145,6 +164,12 @@ class AlohaEnv(gym.Env):
                 "pixels": {"top": raw_obs["images"]["top"].copy()},
                 "agent_pos": raw_obs["qpos"],
             }
+
+        if self.is_ee_task:
+            obs["mocap_pose_left"] = raw_obs["mocap_pose_left"].copy()
+            obs["mocap_pose_right"] = raw_obs["mocap_pose_right"].copy()
+            obs["env_state"] = raw_obs["env_state"].copy()
+
         return obs
 
     def reset(self, seed=None, options=None):
@@ -160,6 +185,9 @@ class AlohaEnv(gym.Env):
             BOX_POSE[0] = sample_box_pose(seed)  # used in sim reset
         elif self.task == "insertion":
             BOX_POSE[0] = np.concatenate(sample_insertion_pose(seed))  # used in sim reset
+        elif self.is_ee_task:
+            # TODO(xuan): implement this
+            pass
         else:
             raise ValueError(self.task)
 

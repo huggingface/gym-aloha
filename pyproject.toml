@@ -1,16 +1,13 @@
 [tool.poetry]
-name = "gym-aloha"
+name = "gym-so100"
 version = "0.1.1"
-description = "A gym environment for ALOHA"
+description = "A gym environment for SO100 robot"
 authors = [
-    "Rémi Cadène <re.cadene@gmail.com>",
-    "Quentin Gallouédec <quentin.gallouedec@ec-lyon.fr>",
-    "Alexander Soare <alexander.soare159@gmail.com>",
-    "Simon Alibert <alibert.sim@gmail.com>",
+    "Xiaoxuan Liu <xiaoxuan.liu.work@gmail.com>",
 ]
 readme = "README.md"
 license = "Apache-2.0"
-keywords = ["robotics", "deep", "reinforcement", "learning", "aloha", "environment", "gym", "gymnasium", "dm-control", "mujoco"]
+keywords = ["robotics", "deep", "reinforcement", "learning", "so100", "environment", "gym", "gymnasium", "dm-control", "mujoco"]
 classifiers=[
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -18,7 +15,7 @@ classifiers=[
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3.10",
 ]
-packages = [{include = "gym_aloha"}]
+packages = [{include = "gym_so100"}]
 
 
 [tool.poetry.dependencies]

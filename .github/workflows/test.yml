@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "gym_aloha/**"
+      - "gym_so100/**"
       - "tests/**"
       - "examples.py"
       - ".github/**"
@@ -14,7 +14,7 @@ on:
     branches:
       - main
     paths:
-      - "gym_aloha/**"
+      - "gym_so100/**"
       - "tests/**"
       - "examples.py"
       - ".github/**"
@@ -50,4 +50,4 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pytest tests -v --cov=./gym_aloha --durations=0
+          pytest tests -v --cov=./gym_so100 --durations=0

@@ -1,8 +1,9 @@
 from pathlib import Path
 
 ### Simulation envs fixed constants
-DT = 0.02  # 0.02 ms -> 1/0.2 = 50 hz
-FPS = 50
+DT = 0.02  # 0.02 ms -> 1/0.02 = 50 hz
+FPS = int(1 / DT)  # frames per second
+SIM_EPISODE_LENGTH = 400  # number of steps per episode
 
 
 JOINTS = [
