@@ -1,0 +1,67 @@
+<mujocoinclude>
+  <compiler angle="radian" meshdir="."/>
+
+  <option cone="elliptic" impratio="10"/>
+
+  <asset>
+    <material name="orange" rgba="1.0 0.331 0.0 1.0" specular="0.1" shininess="0.1"/>
+    <material name="black" rgba="0.1 0.1 0.1 1.0" specular="0.1" shininess="0.1"/>
+
+    <mesh name="Base" file="Base.stl"/>
+    <mesh name="Base_Motor" file="Base_Motor.stl"/>
+    <mesh name="Rotation_Pitch" file="Rotation_Pitch.stl"/>
+    <mesh name="Rotation_Pitch_Motor" file="Rotation_Pitch_Motor.stl"/>
+    <mesh name="Upper_Arm" file="Upper_Arm.stl"/>
+    <mesh name="Upper_Arm_Motor" file="Upper_Arm_Motor.stl"/>
+    <mesh name="Lower_Arm" file="Lower_Arm.stl"/>
+    <mesh name="Lower_Arm_Motor" file="Lower_Arm_Motor.stl"/>
+    <mesh name="Wrist_Pitch_Roll" file="Wrist_Pitch_Roll.stl"/>
+    <mesh name="Wrist_Pitch_Roll_Motor" file="Wrist_Pitch_Roll_Motor.stl"/>
+    <mesh name="Fixed_Jaw" file="Fixed_Jaw.stl"/>
+    <mesh name="Fixed_Jaw_Motor" file="Fixed_Jaw_Motor.stl"/>
+    <mesh name="Fixed_Jaw_Collision_1" file="Fixed_Jaw_Collision_1.stl"/>
+    <mesh name="Fixed_Jaw_Collision_2" file="Fixed_Jaw_Collision_2.stl"/>
+    <mesh name="Moving_Jaw" file="Moving_Jaw.stl"/>
+    <mesh name="Moving_Jaw_Collision_1" file="Moving_Jaw_Collision_1.stl"/>
+    <mesh name="Moving_Jaw_Collision_2" file="Moving_Jaw_Collision_2.stl"/>
+    <mesh name="Moving_Jaw_Collision_3" file="Moving_Jaw_Collision_3.stl"/>
+  </asset>
+
+  <default>
+    <default class="so_arm100">
+      <joint frictionloss="30" armature="0.1" limited="true"/>
+      <position kp="50" forcerange="-35 35" forcelimited="true" ctrlrange="-3.14158 3.14158" ctrllimited="true"/>
+      <default class="Rotation">
+        <joint axis="0 1 0" range="-2.2 2.2"/>
+      </default>
+      <default class="Pitch">
+        <joint axis="1 0 0" range="-3.14158 0.2"/>
+      </default>
+      <default class="Elbow">
+        <joint axis="1 0 0" range="0 3.14158"/>
+      </default>
+      <default class="Wrist_Pitch">
+        <joint axis="1 0 0" range="-2.0 1.8"/>
+      </default>
+      <default class="Wrist_Roll">
+        <joint axis="0 1 0" range="-3.14158 3.14158"/>
+      </default>
+      <default class="Jaw">
+        <joint axis="0 0 1" range="-0.2 2.0"/>
+      </default>
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" density="0" group="2" material="orange"/>
+        <default class="motor_visual">
+          <geom material="black"/>
+        </default>
+      </default>
+      <default class="collision">
+        <geom group="3" type="mesh"/>
+        <default class="finger_collision">
+          <geom type="box" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001"/>
+        </default>
+      </default>
+    </default>
+  </default>
+
+</mujocoinclude>

@@ -8,64 +8,24 @@ SIM_EPISODE_LENGTH = 400  # number of steps per episode
 
 JOINTS = [
     # absolute joint position
-    "left_arm_waist",
-    "left_arm_shoulder",
+    "left_arm_rotation",
+    "left_arm_pitch",
     "left_arm_elbow",
-    "left_arm_forearm_roll",
-    "left_arm_wrist_angle",
-    "left_arm_wrist_rotate",
+    "left_arm_wrist_pitch",
+    "left_arm_wrist_roll",
     # normalized gripper position 0: close, 1: open
-    "left_arm_gripper",
+    "left_arm_jaw",
     # absolute joint position
-    "right_arm_waist",
-    "right_arm_shoulder",
+    "right_arm_rotation",
+    "right_arm_pitch",
     "right_arm_elbow",
-    "right_arm_forearm_roll",
-    "right_arm_wrist_angle",
-    "right_arm_wrist_rotate",
+    "right_arm_wrist_pitch",
+    "right_arm_wrist_roll",
     # normalized gripper position 0: close, 1: open
-    "right_arm_gripper",
+    "right_arm_jaw",
 ]
 
-ACTIONS = [
-    # position and quaternion for end effector
-    "left_arm_waist",
-    "left_arm_shoulder",
-    "left_arm_elbow",
-    "left_arm_forearm_roll",
-    "left_arm_wrist_angle",
-    "left_arm_wrist_rotate",
-    # normalized gripper position (0: close, 1: open)
-    "left_arm_gripper",
-    "right_arm_waist",
-    "right_arm_shoulder",
-    "right_arm_elbow",
-    "right_arm_forearm_roll",
-    "right_arm_wrist_angle",
-    "right_arm_wrist_rotate",
-    # normalized gripper position (0: close, 1: open)
-    "right_arm_gripper",
-]
-
-
-START_ARM_POSE = [
-    0,
-    -0.96,
-    1.16,
-    0,
-    -0.3,
-    0,
-    0.02239,
-    -0.02239,
-    0,
-    -0.96,
-    1.16,
-    0,
-    -0.3,
-    0,
-    0.02239,
-    -0.02239,
-]
+JOINTS_NUM = len(JOINTS)
 
 ASSETS_DIR = Path(__file__).parent.resolve() / "assets"  # note: absolute path
 
@@ -75,13 +35,12 @@ MASTER_GRIPPER_POSITION_CLOSE = 0.01244
 PUPPET_GRIPPER_POSITION_OPEN = 0.05800
 PUPPET_GRIPPER_POSITION_CLOSE = 0.01844
 
-# Gripper joint limits (qpos[6])
+# Gripper joint limits
 MASTER_GRIPPER_JOINT_OPEN = 0.3083
 MASTER_GRIPPER_JOINT_CLOSE = -0.6842
-PUPPET_GRIPPER_JOINT_OPEN = 1.4910
-PUPPET_GRIPPER_JOINT_CLOSE = -0.6213
+PUPPET_GRIPPER_JOINT_OPEN = 0.8
+PUPPET_GRIPPER_JOINT_CLOSE = -0.2
 
-MASTER_GRIPPER_JOINT_MID = (MASTER_GRIPPER_JOINT_OPEN + MASTER_GRIPPER_JOINT_CLOSE) / 2
 
 ############################ Helper functions ############################
 

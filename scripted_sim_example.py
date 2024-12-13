@@ -77,11 +77,12 @@ class PickAndTransferPolicy(BasePolicy):
         # print(f"Generate trajectory for {box_xyz=}")
 
         gripper_pick_quat = Quaternion(init_mocap_pose_right[3:])
-        gripper_pick_quat = gripper_pick_quat * Quaternion(axis=[0.0, 1.0, 0.0], degrees=-60)
+        gripper_pick_quat = gripper_pick_quat * Quaternion(axis=[0.0, 1.0, 0.0], degrees=-70)
 
-        meet_left_quat = Quaternion(axis=[1.0, 0.0, 0.0], degrees=90)
+        meet_left_quat = Quaternion(axis=[1.0, 0.0, 0.0], degrees=-90)
+        meet_right_quat = Quaternion(init_mocap_pose_right[3:])
 
-        meet_xyz = np.array([0, 0.5, 0.25])
+        meet_xyz = np.array([0, 0.6, 0.25])
 
         self.left_trajectory = [
             {
@@ -92,25 +93,25 @@ class PickAndTransferPolicy(BasePolicy):
             },  # sleep
             {
                 "t": 100,
-                "xyz": meet_xyz + np.array([-0.1, 0, -0.02]),
+                "xyz": meet_xyz + np.array([-0.1, 0.01, -0.01]),
                 "quat": meet_left_quat.elements,
                 "gripper": 1,
             },  # approach meet position
             {
                 "t": 260,
-                "xyz": meet_xyz + np.array([0.02, 0, -0.02]),
+                "xyz": meet_xyz + np.array([0.02, 0.01, -0.02]),
                 "quat": meet_left_quat.elements,
                 "gripper": 1,
             },  # move to meet position
             {
                 "t": 310,
-                "xyz": meet_xyz + np.array([0.02, 0, -0.02]),
+                "xyz": meet_xyz + np.array([0.02, 0.01, -0.02]),
                 "quat": meet_left_quat.elements,
                 "gripper": 0,
             },  # close gripper
             {
                 "t": 360,
-                "xyz": meet_xyz + np.array([-0.1, 0, -0.02]),
+                "xyz": meet_xyz + np.array([-0.1, 0.01, -0.02]),
                 "quat": np.array([1, 0, 0, 0]),
                 "gripper": 0,
             },  # move left
@@ -131,35 +132,35 @@ class PickAndTransferPolicy(BasePolicy):
             },  # sleep
             {
                 "t": 90,
-                "xyz": box_xyz + np.array([0, 0, 0.08]),
+                "xyz": box_xyz + np.array([0, -0.04, 0.08]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 1,
             },  # approach the cube
             {
                 "t": 130,
-                "xyz": box_xyz + np.array([0, 0, -0.015]),
+                "xyz": box_xyz + np.array([0, -0.02, -0.03]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 1,
             },  # go down
             {
                 "t": 170,
-                "xyz": box_xyz + np.array([0, 0, -0.015]),
+                "xyz": box_xyz + np.array([0, -0.02, -0.03]),
                 "quat": gripper_pick_quat.elements,
                 "gripper": 0,
             },  # close gripper
             {
                 "t": 200,
                 "xyz": meet_xyz + np.array([0.05, 0, 0]),
-                "quat": gripper_pick_quat.elements,
+                "quat": meet_right_quat.elements,
                 "gripper": 0,
             },  # approach meet position
             {
                 "t": 220,
                 "xyz": meet_xyz,
-                "quat": gripper_pick_quat.elements,
+                "quat": meet_right_quat.elements,
                 "gripper": 0,
             },  # move to meet position
-            {"t": 310, "xyz": meet_xyz, "quat": gripper_pick_quat.elements, "gripper": 1},  # open gripper
+            {"t": 310 + 10, "xyz": meet_xyz, "quat": meet_right_quat.elements, "gripper": 1},  # open gripper
             {
                 "t": 360,
                 "xyz": meet_xyz + np.array([0.1, 0, 0]),
@@ -191,10 +192,10 @@ class InsertionPolicy(BasePolicy):
         gripper_pick_quat_right = Quaternion(init_mocap_pose_right[3:])
         gripper_pick_quat_right = gripper_pick_quat_right * Quaternion(axis=[0.0, 1.0, 0.0], degrees=-60)
 
-        gripper_pick_quat_left = Quaternion(init_mocap_pose_right[3:])
+        gripper_pick_quat_left = Quaternion(init_mocap_pose_left[3:])
         gripper_pick_quat_left = gripper_pick_quat_left * Quaternion(axis=[0.0, 1.0, 0.0], degrees=60)
 
-        meet_xyz = np.array([0, 0.5, 0.15])
+        meet_xyz = np.array([0, 0.6, 0.15])
         lift_right = 0.00715
 
         self.left_trajectory = [
@@ -302,22 +303,35 @@ def test_policy(task_name, policy_cls):
         episode = [[observation, info]]
         frames = [observation["pixels"]["top"]]
         if onscreen_render:
-            ax = plt.subplot()
-            plt_img = ax.imshow(observation["pixels"]["top"])
+            _, axs = plt.subplots(1, 2, figsize=(64, 16))
+            mng = plt.get_current_fig_manager()
+            # maximize window, only tested on ubuntu
+            backend = str(plt.get_backend())
+            if backend == "TkAgg":
+                mng.resize(*mng.window.maxsize())
+            elif backend == "wxAgg":
+                mng.frame.Maximize(True)
+            elif backend == "QtAgg":
+                mng.window.showMaximized()
+            top_img = axs[0].imshow(observation["pixels"]["top"])
+            angle_img = axs[1].imshow(observation["pixels"]["angle"])
             plt.ion()
+            # plt.pause(5.0)
 
         policy = policy_cls(inject_noise)
-        for _ in range(SIM_EPISODE_LENGTH):
+        for i in range(SIM_EPISODE_LENGTH):
             action = policy(observation)
             observation, reward, terminated, truncated, info = env.step(action)
             episode.append([observation, reward, terminated, truncated, info])
             frames.append(observation["pixels"]["top"])
-            if onscreen_render:
-                plt_img.set_data(observation["pixels"]["top"])
+            if onscreen_render and (i % 3 == 0):  # only render every 3 steps for speed
+                top_img.set_data(observation["pixels"]["top"])
+                angle_img.set_data(observation["pixels"]["angle"])
                 plt.pause(0.02)
         plt.close()
 
-        episode_return = np.sum([ep[1] for ep in episode[1:]])
+        # check last 50 frames for success
+        episode_return = np.sum([ep[1] for ep in episode[-50:]])
         if episode_return > 0:
             print(f"{episode_idx=} Successful, {episode_return=}")
             imageio.mimsave(f"example_episode_{episode_idx}.mp4", np.stack(frames), fps=50)
@@ -326,5 +340,5 @@ def test_policy(task_name, policy_cls):
 
 
 if __name__ == "__main__":
-    # test_policy("gym_so100/SO100EETransferCube-v0", PickAndTransferPolicy)
-    test_policy("gym_so100/SO100EEInsertion-v0", InsertionPolicy)
+    test_policy("gym_so100/SO100EETransferCube-v0", PickAndTransferPolicy)
+    # test_policy("gym_so100/SO100EEInsertion-v0", InsertionPolicy) # TODO: Calib the insertion policy

@@ -1,0 +1,54 @@
+<mujoco>
+  <include file="scene.xml"/>
+  <include file="so_arm100_dependencies.xml"/>
+
+  <worldbody>
+    <include file="so_arm100_left.xml"/>
+
+    <include file="so_arm100_right.xml"/>
+
+    <body name="box" pos="0.06 0.66 0.05">
+      <joint name="red_box_joint" type="free" frictionloss="0.01" />
+      <inertial pos="0 0 0" mass="0.05" diaginertia="0.002 0.002 0.002" />
+      <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" pos="0 0 0" size="0.02 0.02 0.02" type="box" name="red_box" rgba="1 0 0 1" />
+    </body>
+  </worldbody>
+
+  <actuator>
+    <!-- Left arm actuators -->
+    <position class="Rotation" name="Left_Rotation" joint="so_arm100_left/Rotation"/>
+    <position class="Pitch" name="Left_Pitch" joint="so_arm100_left/Pitch"/>
+    <position class="Elbow" name="Left_Elbow" joint="so_arm100_left/Elbow"/>
+    <position class="Wrist_Pitch" name="Left_Wrist_Pitch" joint="so_arm100_left/Wrist_Pitch"/>
+    <position class="Wrist_Roll" name="Left_Wrist_Roll" joint="so_arm100_left/Wrist_Roll"/>
+    <position class="Jaw" name="Left_Jaw" joint="so_arm100_left/Jaw"/>
+
+    <!-- Right arm actuators -->
+    <position class="Rotation" name="Right_Rotation" joint="so_arm100_right/Rotation"/>
+    <position class="Pitch" name="Right_Pitch" joint="so_arm100_right/Pitch"/>
+    <position class="Elbow" name="Right_Elbow" joint="so_arm100_right/Elbow"/>
+    <position class="Wrist_Pitch" name="Right_Wrist_Pitch" joint="so_arm100_right/Wrist_Pitch"/>
+    <position class="Wrist_Roll" name="Right_Wrist_Roll" joint="so_arm100_right/Wrist_Roll"/>
+    <position class="Jaw" name="Right_Jaw" joint="so_arm100_right/Jaw"/>
+  </actuator>
+
+  <contact>
+    <exclude body1="so_arm100_left" body2="so_arm100_left/Rotation_Pitch"/>
+    <exclude body1="so_arm100_right" body2="so_arm100_right/Rotation_Pitch"/>
+  </contact>
+
+  <keyframe>
+    <key
+      name="home"
+      qpos="0 -1.57079 1.57079 1.57079 0 0 0 -1.57079 1.57079 1.57079 0 0 0.06 0.66 0.05 1 0 0 0"
+      ctrl="0 -1.57079 1.57079 1.57079 0 0 0 -1.57079 1.57079 1.57079 0 0"
+    />
+    <key
+      name="prepare"
+      qpos="0.0 -3.1718 3.0943 0.0691 0.0708 -0.08 0.0014 -3.17 3.0884 0.1397 -0.0001 -0.08 0.06 0.66 0.05 1 0 0 0"
+      ctrl="0.0 -3.1718 3.0943 0.0691 0.0708 -0.08 0.0014 -3.17 3.0884 0.1397 -0.0001 -0.08"
+    />
+  </keyframe>
+
+
+</mujoco>

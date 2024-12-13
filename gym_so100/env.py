@@ -5,11 +5,9 @@ from dm_control.rl import control
 from gymnasium import spaces
 
 from gym_so100.constants import (
-    ACTIONS,
     ASSETS_DIR,
     DT,
     JOINTS,
-    START_ARM_POSE,
 )
 from gym_so100.tasks.sim import BOX_POSE, InsertionTask, TransferCubeTask
 from gym_so100.tasks.sim_end_effector import (
@@ -62,7 +60,13 @@ class SO100Env(gym.Env):
                         high=255,
                         shape=(self.observation_height, self.observation_width, 3),
                         dtype=np.uint8,
-                    )
+                    ),
+                    "angle": spaces.Box(
+                        low=0,
+                        high=255,
+                        shape=(self.observation_height, self.observation_width, 3),
+                        dtype=np.uint8,
+                    ),
                 }
             )
         elif self.obs_type == "pixels_agent_pos":
@@ -75,7 +79,13 @@ class SO100Env(gym.Env):
                                 high=255,
                                 shape=(self.observation_height, self.observation_width, 3),
                                 dtype=np.uint8,
-                            )
+                            ),
+                            "angle": spaces.Box(
+                                low=0,
+                                high=255,
+                                shape=(self.observation_height, self.observation_width, 3),
+                                dtype=np.uint8,
+                            ),
                         }
                     ),
                     "agent_pos": spaces.Box(
@@ -102,9 +112,10 @@ class SO100Env(gym.Env):
 
         # Define the action space
         if self.is_ee_task:
-            self.action_space = spaces.Box(low=-1, high=1, shape=(len(START_ARM_POSE),), dtype=np.float32)
+            # 7 pose of arm + 1 DoF for gripper, (7 + 1) * 2 for both arms
+            self.action_space = spaces.Box(low=-1, high=1, shape=(16,), dtype=np.float32)
         else:
-            self.action_space = spaces.Box(low=-1, high=1, shape=(len(ACTIONS),), dtype=np.float32)
+            self.action_space = spaces.Box(low=-1, high=1, shape=(len(JOINTS),), dtype=np.float32)
 
     def render(self):
         return self._render(visualize=True)
@@ -131,19 +142,19 @@ class SO100Env(gym.Env):
         time_limit = float("inf")
 
         if task_name == "transfer_cube":
-            xml_path = ASSETS_DIR / "bimanual_viperx_transfer_cube.xml"
+            xml_path = ASSETS_DIR / "bimanual_transfer_cube.xml"
             physics = mujoco.Physics.from_xml_path(str(xml_path))
             task = TransferCubeTask()
         elif task_name == "insertion":
-            xml_path = ASSETS_DIR / "bimanual_viperx_insertion.xml"
+            xml_path = ASSETS_DIR / "bimanual_insertion.xml"
             physics = mujoco.Physics.from_xml_path(str(xml_path))
             task = InsertionTask()
         elif task_name == "end_effector_transfer_cube":
-            xml_path = ASSETS_DIR / "bimanual_viperx_end_effector_transfer_cube.xml"
+            xml_path = ASSETS_DIR / "bimanual_end_effector_transfer_cube.xml"
             physics = mujoco.Physics.from_xml_path(str(xml_path))
             task = TransferCubeEndEffectorTask()
         elif task_name == "end_effector_insertion":
-            xml_path = ASSETS_DIR / "bimanual_viperx_end_effector_insertion.xml"
+            xml_path = ASSETS_DIR / "bimanual_end_effector_insertion.xml"
             physics = mujoco.Physics.from_xml_path(str(xml_path))
             task = InsertionEndEffectorTask()
         else:
@@ -158,10 +169,16 @@ class SO100Env(gym.Env):
         if self.obs_type == "state":
             raise NotImplementedError()
         elif self.obs_type == "pixels":
-            obs = {"top": raw_obs["images"]["top"].copy()}
+            obs = {
+                "top": raw_obs["images"]["top"].copy(),
+                "angle": raw_obs["images"]["angle"].copy(),
+            }
         elif self.obs_type == "pixels_agent_pos":
             obs = {
-                "pixels": {"top": raw_obs["images"]["top"].copy()},
+                "pixels": {
+                    "top": raw_obs["images"]["top"].copy(),
+                    "angle": raw_obs["images"]["angle"].copy(),
+                },
                 "agent_pos": raw_obs["qpos"],
             }
 
@@ -181,13 +198,10 @@ class SO100Env(gym.Env):
             self._env.task._random = np.random.RandomState(seed)
 
         # TODO(rcadene): do not use global variable for this
-        if self.task == "transfer_cube":
+        if "transfer_cube" in self.task:
             BOX_POSE[0] = sample_box_pose(seed)  # used in sim reset
-        elif self.task == "insertion":
+        elif "insertion" in self.task:
             BOX_POSE[0] = np.concatenate(sample_insertion_pose(seed))  # used in sim reset
-        elif self.is_ee_task:
-            # TODO(xuan): implement this
-            pass
         else:
             raise ValueError(self.task)
 

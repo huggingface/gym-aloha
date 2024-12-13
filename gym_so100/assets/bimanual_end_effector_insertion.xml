@@ -1,0 +1,75 @@
+<mujoco>
+  <include file="scene.xml"/>
+  <include file="so_arm100_dependencies.xml"/>
+
+  <equality>
+    <weld body1="mocap_left"  body2="so_arm100_left/Fixed_Jaw"  solref="0.01 1" solimp=".25 .25 0.001" />
+    <weld body1="mocap_right" body2="so_arm100_right/Fixed_Jaw" solref="0.01 1" solimp=".25 .25 0.001" />
+  </equality>
+
+  <worldbody>
+    <include file="so_arm100_left.xml"/>
+
+    <include file="so_arm100_right.xml"/>
+
+    <!-- Mocap Bodies, Fixed_Jaw rellative pos to arm base is (0.4831 0 0.0955), set the world pos based on ref arm base -->
+    <!-- pos = left arm pos  + (0.4831 0 0.0955),  quat = left Fixed_Jaw quat -->
+    <body mocap="true" name="mocap_left" pos="0.1231 0.60 0.0955">
+      <site pos="0.012 0 0" size="0.015 0.003 0.003" type="box" name="mocap_left_x" rgba="1 0 0 1"/>
+      <site pos="0 0.012 0" size="0.003 0.015 0.003" type="box" name="mocap_left_y" rgba="0 1 0 1"/>
+      <site pos="0 0 0.012" size="0.003 0.003 0.015" type="box" name="mocap_left_z" rgba="0 0 1 1"/>
+    </body>
+    <!-- pos = right arm pos + (-0.4831 0 0.0955), quat = right Fixed_Jaw quat -->
+    <body mocap="true" name="mocap_right" pos="-0.1231 0.60 0.0955" quat="0 0 1 0">
+      <site pos="0.012 0 0" size="0.015 0.003 0.003" type="box" name="mocap_right_x" rgba="1 0 0 1"/>
+      <site pos="0 0.012 0" size="0.003 0.015 0.003" type="box" name="mocap_right_y" rgba="0 1 0 1"/>
+      <site pos="0 0 0.012" size="0.003 0.003 0.015" type="box" name="mocap_right_z" rgba="0 0 1 1"/>
+    </body>
+
+    <body name="peg" pos="0.2 0.6 0.05">
+      <joint name="red_peg_joint" type="free" frictionloss="0.01" />
+      <inertial pos="0 0 0" mass="0.05" diaginertia="0.002 0.002 0.002" />
+      <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" pos="0 0 0" size="0.06 0.01 0.01" type="box" name="red_peg" rgba="1 0 0 1" />
+    </body>
+
+    <body name="socket" pos="-0.2 0.6 0.05">
+      <joint name="blue_socket_joint" type="free" frictionloss="0.01" />
+      <inertial pos="0 0 0" mass="0.05" diaginertia="0.002 0.002 0.002" />
+      <!-- <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" pos="0 0 0" size="0.06 0.01 0.01" type="box" name="red_peg_ref" rgba="1 0 0 1" /> -->
+      <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.05 0.001" pos="0 0 -0.02" size="0.06 0.018 0.002" type="box" name="socket-1" rgba="0 0 1 1" />
+      <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.05 0.001" pos="0 0 0.02" size="0.06 0.018 0.002" type="box" name="socket-2" rgba="0 0 1 1" />
+      <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.05 0.001" pos="0 0.02 0" size="0.06 0.002 0.018" type="box" name="socket-3" rgba="0 0 1 1" />
+      <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.05 0.001" pos="0 -0.02 0" size="0.06 0.002 0.018" type="box" name="socket-4" rgba="0 0 1 1" />
+      <geom condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" pos="0 0 0" size="0.04 0.01 0.01" type="box" name="pin" rgba="1 0 0 1" />
+    </body>
+
+  </worldbody>
+
+  <actuator>
+    <!-- Left arm actuators -->
+    <position class="Jaw" name="Left_Jaw" joint="so_arm100_left/Jaw" kp="200"/>
+
+    <!-- Right arm actuators -->
+    <position class="Jaw" name="Right_Jaw" joint="so_arm100_right/Jaw" kp="200"/>
+  </actuator>
+
+  <contact>
+    <exclude body1="so_arm100_left" body2="so_arm100_left/Rotation_Pitch"/>
+    <exclude body1="so_arm100_right" body2="so_arm100_right/Rotation_Pitch"/>
+  </contact>
+
+  <keyframe>
+    <key
+      name="home"
+      qpos="0 -1.57079 1.57079 1.57079 0 0 0 -1.57079 1.57079 1.57079 0 0  0.2 0.6 0.05 1 0 0 0  -0.2 0.6 0.05 1 0 0 0"
+      ctrl="0 0"
+    />
+    <key
+      name="prepare"
+      qpos="0.0 -3.1718 3.0943 0.0691 0.0708 -0.08 0.0014 -3.17 3.0884 0.1397 -0.0001 -0.08  0.2 0.6 0.05 1 0 0 0  -0.2 0.6 0.05 1 0 0 0"
+      ctrl="0 0"
+    />
+  </keyframe>
+
+
+</mujoco>
