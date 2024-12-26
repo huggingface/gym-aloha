@@ -32,9 +32,9 @@
             <geom type="mesh" mesh="Wrist_Pitch_Roll_Motor" class="motor_visual"/>
             <geom type="mesh" mesh="Wrist_Pitch_Roll" class="collision"/>
             <body name="so_arm100_right/Fixed_Jaw" pos="0 -0.0601 0" euler="0 0 0">
-              <site pos="0 -0.1 0" size="0.003 0.003 0.015" type="box" name="cali_right_site1" rgba="0 0 1 1"/>
-              <site pos="0 -0.1 0" size="0.003 0.015 0.003" type="box" name="cali_right_site2" rgba="0 0 1 1"/>
-              <site pos="0 -0.1 0" size="0.015 0.003 0.003" type="box" name="cali_right_site3" rgba="0 0 1 1"/>
+              <site pos="0 -0.1 0" size="0.003 0.003 0.015" type="box" name="cali_right_site1" rgba="0 0 1 0"/>
+              <site pos="0 -0.1 0" size="0.003 0.015 0.003" type="box" name="cali_right_site2" rgba="0 0 1 0"/>
+              <site pos="0 -0.1 0" size="0.015 0.003 0.003" type="box" name="cali_right_site3" rgba="0 0 1 0"/>
               <inertial pos="0.00552377 -0.0280167 0.000483583" quat="0.41836 0.620891 -0.350644 0.562599"
                 mass="0.0929859" diaginertia="5.03136e-05 4.64098e-05 2.72961e-05"/>
               <joint name="so_arm100_right/Wrist_Roll" class="Wrist_Roll"/>

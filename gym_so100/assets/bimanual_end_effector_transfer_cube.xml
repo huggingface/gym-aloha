@@ -15,15 +15,15 @@
     <!-- Mocap Bodies, Fixed_Jaw rellative pos to arm base is (0.4831 0 0.0955), set the world pos based on ref arm base -->
     <!-- pos = left arm pos  + (0.4831 0 0.0955),  quat = left Fixed_Jaw quat -->
     <body mocap="true" name="mocap_left" pos="0.1231 0.60 0.0955">
-      <site pos="0.012 0 0" size="0.015 0.003 0.003" type="box" name="mocap_left_x" rgba="1 0 0 1"/>
-      <site pos="0 0.012 0" size="0.003 0.015 0.003" type="box" name="mocap_left_y" rgba="0 1 0 1"/>
-      <site pos="0 0 0.012" size="0.003 0.003 0.015" type="box" name="mocap_left_z" rgba="0 0 1 1"/>
+      <site pos="0.012 0 0" size="0.015 0.003 0.003" type="box" name="mocap_left_x" rgba="1 0 0 0"/>
+      <site pos="0 0.012 0" size="0.003 0.015 0.003" type="box" name="mocap_left_y" rgba="0 1 0 0"/>
+      <site pos="0 0 0.012" size="0.003 0.003 0.015" type="box" name="mocap_left_z" rgba="0 0 1 0"/>
     </body>
     <!-- pos = right arm pos + (-0.4831 0 0.0955), quat = right Fixed_Jaw quat -->
     <body mocap="true" name="mocap_right" pos="-0.1231 0.60 0.0955" quat="0 0 1 0">
-      <site pos="0.012 0 0" size="0.015 0.003 0.003" type="box" name="mocap_right_x" rgba="1 0 0 1"/>
-      <site pos="0 0.012 0" size="0.003 0.015 0.003" type="box" name="mocap_right_y" rgba="0 1 0 1"/>
-      <site pos="0 0 0.012" size="0.003 0.003 0.015" type="box" name="mocap_right_z" rgba="0 0 1 1"/>
+      <site pos="0.012 0 0" size="0.015 0.003 0.003" type="box" name="mocap_right_x" rgba="1 0 0 0"/>
+      <site pos="0 0.012 0" size="0.003 0.015 0.003" type="box" name="mocap_right_y" rgba="0 1 0 0"/>
+      <site pos="0 0 0.012" size="0.003 0.003 0.015" type="box" name="mocap_right_z" rgba="0 0 1 0"/>
     </body>
 
     <body name="box" pos="0.06 0.62 0.05">
