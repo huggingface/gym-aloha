@@ -1,5 +1,7 @@
 from gymnasium.envs.registration import register
 
+from .policy import InsertionPolicy, PickAndTransferPolicy  # noqa: F401
+
 register(
     id="gym_so100/SO100Insertion-v0",
     entry_point="gym_so100.env:SO100Env",

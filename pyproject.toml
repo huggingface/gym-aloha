@@ -20,7 +20,7 @@ packages = [{include = "gym_so100"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-mujoco = "^2.3.7"
+mujoco = "<3.0"
 gymnasium = ">=0.29.1"
 dm-control = ">=1.0.14"
 imageio = {extras = ["ffmpeg"], version = ">=2.34.0"}

@@ -1,13 +1,8 @@
-import gymnasium as gym
-import imageio
-import matplotlib.pyplot as plt
 import numpy as np
 from pyquaternion import Quaternion
 
-from gym_so100.constants import SIM_EPISODE_LENGTH
 
-
-class BasePolicy:
+class ScriptedPolicy:
     def __init__(self, inject_noise=False):
         self.inject_noise = inject_noise
         self.step_count = 0
@@ -66,7 +61,7 @@ class BasePolicy:
         return np.concatenate([action_left, action_right])
 
 
-class PickAndTransferPolicy(BasePolicy):
+class PickAndTransferPolicy(ScriptedPolicy):
     def generate_trajectory(self, observation):
         init_mocap_pose_right = observation["mocap_pose_right"]
         init_mocap_pose_left = observation["mocap_pose_left"]
@@ -160,7 +155,7 @@ class PickAndTransferPolicy(BasePolicy):
                 "quat": meet_right_quat.elements,
                 "gripper": 0,
             },  # move to meet position
-            {"t": 310 + 10, "xyz": meet_xyz, "quat": meet_right_quat.elements, "gripper": 1},  # open gripper
+            {"t": 310 + 20, "xyz": meet_xyz, "quat": meet_right_quat.elements, "gripper": 1},  # open gripper
             {
                 "t": 360,
                 "xyz": meet_xyz + np.array([0.1, 0, 0]),
@@ -176,7 +171,7 @@ class PickAndTransferPolicy(BasePolicy):
         ]
 
 
-class InsertionPolicy(BasePolicy):
+class InsertionPolicy(ScriptedPolicy):
     def generate_trajectory(self, observation):
         init_mocap_pose_right = observation["mocap_pose_right"]
         init_mocap_pose_left = observation["mocap_pose_left"]
@@ -287,58 +282,3 @@ class InsertionPolicy(BasePolicy):
                 "gripper": 0,
             },  # insertion
         ]
-
-
-def test_policy(task_name, policy_cls):
-    # example rolling out pick_and_transfer policy
-    onscreen_render = True
-    inject_noise = False
-
-    # setup the environment
-    env = gym.make(task_name, obs_type="pixels_agent_pos")
-
-    for episode_idx in range(2):
-        observation, info = env.reset()
-        # init episode with first observation and info
-        episode = [[observation, info]]
-        frames = [observation["pixels"]["top"]]
-        if onscreen_render:
-            _, axs = plt.subplots(1, 2, figsize=(64, 16))
-            mng = plt.get_current_fig_manager()
-            # maximize window, only tested on ubuntu
-            backend = str(plt.get_backend())
-            if backend == "TkAgg":
-                mng.resize(*mng.window.maxsize())
-            elif backend == "wxAgg":
-                mng.frame.Maximize(True)
-            elif backend == "QtAgg":
-                mng.window.showMaximized()
-            top_img = axs[0].imshow(observation["pixels"]["top"])
-            angle_img = axs[1].imshow(observation["pixels"]["angle"])
-            plt.ion()
-            # plt.pause(5.0)
-
-        policy = policy_cls(inject_noise)
-        for i in range(SIM_EPISODE_LENGTH):
-            action = policy(observation)
-            observation, reward, terminated, truncated, info = env.step(action)
-            episode.append([observation, reward, terminated, truncated, info])
-            frames.append(observation["pixels"]["top"])
-            if onscreen_render and (i % 3 == 0):  # only render every 3 steps for speed
-                top_img.set_data(observation["pixels"]["top"])
-                angle_img.set_data(observation["pixels"]["angle"])
-                plt.pause(0.02)
-        plt.close()
-
-        # check last 50 frames for success
-        episode_return = np.sum([ep[1] for ep in episode[-50:]])
-        if episode_return > 0:
-            print(f"{episode_idx=} Successful, {episode_return=}")
-            imageio.mimsave(f"example_episode_{episode_idx}.mp4", np.stack(frames), fps=50)
-        else:
-            print(f"{episode_idx=} Failed")
-
-
-if __name__ == "__main__":
-    test_policy("gym_so100/SO100EETransferCube-v0", PickAndTransferPolicy)
-    # test_policy("gym_so100/SO100EEInsertion-v0", InsertionPolicy) # TODO: Calib the insertion policy

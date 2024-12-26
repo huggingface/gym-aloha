@@ -2,7 +2,7 @@
 
 A gym environment for [SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100).
 
-<img src="./example_episode_0.gif" width="50%" alt="ACT SO100EEInsertion-v0 policy on SO100 env"/>
+<img src="./example_episode_0.gif" width="50%" alt="ACT SO100EETransferCube-v0 policy on SO100 env"/>
 
 
 ## Installation
@@ -45,10 +45,14 @@ for _ in range(1000):
 env.close()
 imageio.mimsave("example.mp4", np.stack(frames), fps=25)
 ```
-### 2. Run the example script
+### 2. Run the scripted sim task example
 
 ```bash
-python scripted_sim_example.py
+from gym_so100.policy import InsertionPolicy, PickAndTransferPolicy
+from tests.test_policy import test_policy
+
+test_policy("gym_so100/SO100EETransferCube-v0", PickAndTransferPolicy, True)
+# test_policy("gym_so100/SO100EEInsertion-v0", InsertionPolicy, True)
 ```
 
 ## Description
