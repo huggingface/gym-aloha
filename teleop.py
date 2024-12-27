@@ -25,6 +25,7 @@ def key_callback_data(key, data):
     :return: None
     """
     global MOCAP_INDEX
+    print(chr(key))
     if key == 265:  # Up arrow
         data.mocap_pos[MOCAP_INDEX, 2] += 0.01
     elif key == 264:  # Down arrow
@@ -57,7 +58,7 @@ def key_callback_data(key, data):
 
 def main():
     # Load the mujoco model basic.xml
-    model = mujoco.MjModel.from_xml_path("gym_so100/assets/bimanual_transfer_cube.xml")
+    model = mujoco.MjModel.from_xml_path("gym_so100/assets/bimanual_end_effector_transfer_cube.xml")
     data = mujoco.MjData(model)
 
     def key_callback(key):

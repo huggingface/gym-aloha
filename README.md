@@ -51,8 +51,8 @@ imageio.mimsave("example.mp4", np.stack(frames), fps=25)
 from gym_so100.policy import InsertionPolicy, PickAndTransferPolicy
 from tests.test_policy import test_policy
 
-test_policy("gym_so100/SO100EETransferCube-v0", PickAndTransferPolicy, True)
-# test_policy("gym_so100/SO100EEInsertion-v0", InsertionPolicy, True)
+test_policy("SO100EETransferCube-v0", PickAndTransferPolicy, True)
+# test_policy("SO100EEInsertion-v0", InsertionPolicy, True)
 ```
 
 ## Description
@@ -87,10 +87,10 @@ Observations are provided as a dictionary with the following keys:
     - 4 points for successful insertion of the peg into the socket.
 
 ### Success Criteria
-Achieving the maximum reward of 4 points.
+Achieving the maximum reward of 4 points more than 10 times within last 50 steps.
 
 ### Starting State
-The arms and the items (block, peg, socket) start at a random position and angle.
+The arms at home position and the items (block, peg, socket) start at a random position and angle.
 
 ### Arguments
 
@@ -113,6 +113,19 @@ The arms and the items (block, peg, socket) start at a random position and angle
 * `visualization_width`: (int) The width of the visualized image. Default is `640`.
 
 * `visualization_height`: (int) The height of the visualized image. Default is `480`.
+
+
+# LeRobot Dataset Creation
+
+```bash
+# 1. clone lerobot repo and install lerobot env, note: `pip install lerobot` do not include `LeRobotDataset` module
+git clone https://github.com/huggingface/lerobot.git --single-branch
+pip install -e .
+
+# back to this repo and run the script to create dataset
+# Note: update params to your own
+python record_lerobot_dataset.py --user-id xuaner233 --root dataset --num-episodes 1
+```
 
 
 ## Contribute

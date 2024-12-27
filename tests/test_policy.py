@@ -11,8 +11,8 @@ from gym_so100.policy import InsertionPolicy, PickAndTransferPolicy
 @pytest.mark.parametrize(
     "task_name, policy_cls",
     [
-        ("gym_so100/SO100EETransferCube-v0", PickAndTransferPolicy),
-        ("gym_so100/SO100EEInsertion-v0", InsertionPolicy),
+        ("SO100EETransferCube-v0", PickAndTransferPolicy),
+        ("SO100EEInsertion-v0", InsertionPolicy),
     ],
 )
 def test_policy(task_name, policy_cls, render=False, episode_num=1):

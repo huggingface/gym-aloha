@@ -20,5 +20,5 @@ import gym_so100  # noqa: F401
     ],
 )
 def test_so100_tasks(env_task, obs_type):
-    env = gym.make(f"gym_so100/{env_task}", obs_type=obs_type)
+    env = gym.make(env_task, obs_type=obs_type)
     check_env(env.unwrapped)
