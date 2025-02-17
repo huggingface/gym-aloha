@@ -1,77 +1,22 @@
-[tool.poetry]
-name = "gym-aloha"
-version = "0.1.1"
-description = "A gym environment for ALOHA"
-authors = [
-    "Rémi Cadène <re.cadene@gmail.com>",
-    "Quentin Gallouédec <quentin.gallouedec@ec-lyon.fr>",
-    "Alexander Soare <alexander.soare159@gmail.com>",
-    "Simon Alibert <alibert.sim@gmail.com>",
-]
+[project]
+name = "gym-aloha-dummy"
+version = "0.1.0"
+description = "Add your description here"
 readme = "README.md"
-license = "Apache-2.0"
-keywords = ["robotics", "deep", "reinforcement", "learning", "aloha", "environment", "gym", "gymnasium", "dm-control", "mujoco"]
-classifiers=[
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "Topic :: Software Development :: Build Tools",
-    "License :: OSI Approved :: Apache Software License",
-    "Programming Language :: Python :: 3.10",
-]
-packages = [{include = "gym_aloha"}]
-
-
-[tool.poetry.dependencies]
-python = "^3.10"
-mujoco = "^2.3.7"
-gymnasium = ">=0.29.1"
-dm-control = ">=1.0.14"
-imageio = {extras = ["ffmpeg"], version = ">=2.34.0"}
-pre-commit = {version = ">=3.7.0", optional = true}
-debugpy = {version = ">=1.8.1", optional = true}
-pytest = {version = ">=8.1.0", optional = true}
-pytest-cov = {version = ">=5.0.0", optional = true}
-
-
-[tool.poetry.extras]
-dev = ["pre-commit", "debugpy"]
-test = ["pytest", "pytest-cov"]
-
-
-[tool.ruff]
-line-length = 110
-target-version = "py310"
-exclude = [
-    "example.py",
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".git-rewrite",
-    ".hg",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".pytype",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "venv",
+requires-python = ">=3.11"
+dependencies = [
+    "dm-control>=1.0.27",
+    "gymnasium>=1.0.0",
+    "imageio[ffmpeg]>=2.37.0",
+    "ipython>=8.32.0",
+    "torch>=2.6.0",
+    "torchvision>=0.21.0",
 ]
 
+[dependency-groups]
+dev = [
+    "gym-aloha-dummy",
+]
 
-[tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "I", "N", "B", "C4", "SIM"]
-ignore-init-module-imports = true
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.uv.sources]
+gym-aloha-dummy = { workspace = true }
