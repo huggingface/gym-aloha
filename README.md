@@ -117,7 +117,7 @@ import subprocess
 if subprocess.run('nvidia-smi').returncode:
   raise RuntimeError(
       'Cannot communicate with GPU. '
-      'Make sure you are using a GPU Colab runtime. '
+      'Make sure you are using a GPU runtime. '
       'Go to the Runtime menu and select Choose runtime type.'
   )
 
