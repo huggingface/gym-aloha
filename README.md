@@ -122,7 +122,7 @@ if subprocess.run('nvidia-smi').returncode:
   )
 
 # Add an ICD config so that glvnd can pick up the Nvidia EGL driver.
-# This is usually installed as part of an Nvidia driver package, but the Colab
+# This is usually installed as part of an Nvidia driver package, but the
 # kernel doesn't install its driver via APT, and as a result the ICD is missing.
 # (https://github.com/NVIDIA/libglvnd/blob/master/src/EGL/icd_enumeration.md)
 NVIDIA_ICD_CONFIG_PATH = '/usr/share/glvnd/egl_vendor.d/10_nvidia.json'
