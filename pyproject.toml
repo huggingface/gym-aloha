@@ -25,7 +25,7 @@ packages = [{include = "gym_aloha"}]
 python = "^3.10"
 mujoco = ">=3.0.0"
 gymnasium = ">=0.29.1"
-dm-control = ">=1.0.28"
+dm-control = ">=1.0.15"
 imageio = {extras = ["ffmpeg"], version = ">=2.34.0"}
 pre-commit = {version = ">=3.7.0", optional = true}
 debugpy = {version = ">=1.8.1", optional = true}
