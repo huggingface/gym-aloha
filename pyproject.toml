@@ -23,7 +23,7 @@ packages = [{include = "gym_aloha"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-mujoco = ">=3.0.0"
+mujoco = ">=3.0.0,<3.9.0"
 gymnasium = ">=0.29.1"
 dm-control = ">=1.0.15"
 imageio = {extras = ["ffmpeg"], version = ">=2.34.0"}
